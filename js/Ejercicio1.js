@@ -42,7 +42,7 @@ function iniciarJuego() {
   // luego lo quitare en produccion
   console.log("DEBUG - Número mágico:", numeroMagico);
 
-  alert("¡Juego iniciado! Adiviná un número del 1 al 100.");
+  alert("¡Juego iniciado! Adiviná el número del 1 al 100.");
 }
 
 // Muestra el contador en pantalla
@@ -50,6 +50,91 @@ function actualizarIntentosUI() {
   if (msgIntentos) {
     msgIntentos.textContent = `Intentos: ${intentos}`;
   }
+}
+
+/**
+ * Lee el valor del input, valida que sea un entero 1–100
+ * y devuelve ese número. Si no es válido, devuelve null y muestra alert.
+ * Esto centraliza la validación en un solo lugar (limpieza de responsabilidades).
+ */
+function leerYValidarNumero() {
+  const valor = inputNumero.value.trim();
+  if (valor === "") {
+    alert("Por favor, ingresá un número.");
+    return null;
+  }
+
+  const n = Number(valor);
+
+  // Validamos: entero y dentro del rango
+  if (!Number.isInteger(n) || n < 1 || n > 100) {
+    alert("El número debe ser un entero entre 1 y 100.");
+    return null;
+  }
+  return n; //si pasó todas las validaciones, devolvés el número entero válido.
+}
+
+/*
+ * Maneja el submit del formulario:
+ * - evita recarga (preventDefault)
+ * - chequea estado del juego
+ * - valida número
+ * - compara con el número mágico y da pistas por alert
+ * - si acierta, finaliza el juego
+ */
+
+function verificarIntento(e) {
+  e.preventDefault();
+
+  // entra acá cuando enJuego es false
+  if (!enJuego) {
+    alert("Primero presioná 'Comenzar' para iniciar el juego.");
+    return;
+  }
+
+  const n = leerYValidarNumero();
+  if (n === null) {
+    inputNumero.focus();
+    return; // corto aca si la entrada no sirve
+  }
+
+  // 3) Contabilizar intento válido y reflejar en UI
+  intentos++;
+  actualizarIntentosUI();
+
+  if (n === numeroMagico) {
+    alert(
+      `🎉 ¡Adivinaste! El número mágico era ${numeroMagico}. Intentos: ${intentos}`
+    );
+    finalizarJuego();
+  } else if (n > numeroMagico) {
+    alert("❌ No es. Pista: tu número es MAYOR que el número mágico.");
+  } else {
+    alert("❌ No es. Pista: tu número es MENOR que el número mágico.");
+  }
+
+  // UX: seleccionamos el texto del input para teclear el próximo intento al toque
+  inputNumero.select();
+  /*Hace que el texto dentro del input quede seleccionado (resaltado) automáticamente.
+  Diferencia con focus()
+focus() solo pone el cursor en el input.
+select() selecciona todo el contenido (y también enfoca).
+*/
+}
+
+/**
+ * Finaliza el juego deshabilitando controles.
+ * Evita intentos fuera de partida y deja el botón como "Reiniciar".
+ */
+function finalizarJuego() {
+  enJuego = false;
+  inputNumero.setAttribute("disabled", "true");
+  btnEnviar.setAttribute("disabled", "true");
+}
+
+/** Actualiza el contador visual de intentos (separado para mantener SRP). */
+function actualizarIntentosUI() {
+  msgIntentos.textContent = `Intentos: ${intentos}`;
 }
 
 // ============ 2) VARIABLES ============
@@ -68,7 +153,8 @@ const msgIntentos = document.getElementById("msg-intentos");
 // ============ 3) LÓGICA / EVENTOS ============
 
 // Botón Comenzar / Reiniciar
-
 if (btnStart) {
   btnStart.addEventListener("click", iniciarJuego);
 }
+//Enviar intento (submit del form)
+formIntento.addEventListener("submit", verificarIntento);
