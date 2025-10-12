@@ -1,0 +1,36 @@
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main{
+    flex-grow: 1;
+}
+
+/* Desplazamiento suave para anclas internas */
+html { scroll-behavior: smooth; }
+
+/* Si alguna vez uso navbar fixed-top, esto evita que tape el título. 
+   Ajustá el 80px si tu navbar fuera más alta. */
+#como-jugar, #juego { scroll-margin-top: 80px; }
+
+/* Resaltado breve de sección al llegar */
+@keyframes section-pulse {
+  0%   { transform: scale(1); box-shadow: none; }
+  20%  { transform: scale(1.01); box-shadow: 0 0 0 0.5rem rgba(var(--bs-primary-rgb), .25); }
+  100% { transform: scale(1); box-shadow: none; }
+}
+.pulse-highlight {
+  animation: section-pulse 800ms ease-out 1;
+  border-radius: .75rem; /* se ve más prolijo con Quartz */
+}
+
+/* Resaltado de foco para un control (input o botón) */
+@keyframes field-blink {
+  0%   { box-shadow: 0 0 0 .25rem rgba(var(--bs-success-rgb), .4); }
+  100% { box-shadow: none; }
+}
+.field-highlight {
+  animation: field-blink 1000ms ease-out 1;
+}
