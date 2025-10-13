@@ -132,11 +132,6 @@ function finalizarJuego() {
   btnEnviar.setAttribute("disabled", "true");
 }
 
-/** Actualiza el contador visual de intentos (separado para mantener SRP). */
-function actualizarIntentosUI() {
-  msgIntentos.textContent = `Intentos: ${intentos}`;
-}
-
 // ============ 2) VARIABLES ============
 
 let numeroMagico = null; //todavia no hay numero secreto hasta iniciar el juego
@@ -158,3 +153,20 @@ if (btnStart) {
 }
 //Enviar intento (submit del form)
 formIntento.addEventListener("submit", verificarIntento);
+
+
+//Para que en el Navbar me recargue
+document.querySelectorAll('a[href="#como-jugar"], a[href="#juego"]').forEach(a => {
+  a.addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
+});
+
+/*
+e.preventDefault();
+Anula el comportamiento por defecto del link (que sería hacer scroll al elemento con ese hash).
+Así evitamos que vaya a #como-jugar o #juego* ya que a simple vista no hacia scroll
+
+location.reload();
+Recarga la página actual.
+Es equivalente a tocar el botón recargar del navegador.
+Resetea tu juego (variables vuelven al estado inicial).
+*/
